@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import BlogTile from './subcomponents/BlogTile';
+import axios from 'axios';
 
 // import axios
 
@@ -15,11 +16,22 @@ class User extends Component{
     }
 
     // insert componentWillMount
+    componentWillMount(){
+        axios.get(`/api/users/${this.props.match.params.id}`).then(res=>{
+            this.setState({ user: res.data })
+        })
+        axios.get(`/api/blogs/${this.props.match.params.id}`).then(res=>{
+            this.setState({posts: res.data})
+        })
+               
+    }
     
 
     render(){
+        let posts = [];
         const user = this.state.user
-        const posts = this.state.posts.map((c,i)=><BlogTile key={i} blog={c}/>)
+        let copyPosts = this.state.posts;
+        (this.state.posts.length > 0) ? copyPosts.map((c,i)=><BlogTile key={i} blog={c}/>) : false;
         return (
             <div className='content'>
                 <div className="profile">
